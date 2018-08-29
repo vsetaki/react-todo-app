@@ -5,13 +5,23 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ListItemText from '@material-ui/core/ListItemText';
 import Checkbox from '@material-ui/core/Checkbox';
+import Button from '@material-ui/core/Button';
+import DeleteIcon from '@material-ui/icons/Delete';
 
-const Task = ({ checked, text, onCheckChange }) => (
-  <ListItem key={text} dense button>
+const Task = ({
+  id, checked, text, onCheckChange, onItemClick, onClickRemove,
+}) => (
+  <ListItem key={text} dense button onClick={onItemClick}>
     <ListItemText primary={text} />
     <ListItemSecondaryAction>
+      <Button
+        onClick={() => onClickRemove(id)}
+        checked={checked}
+      >
+        <DeleteIcon />
+      </Button>
       <Checkbox
-        onChange={onCheckChange}
+        onChange={(event, isChecked) => onCheckChange(id, isChecked)}
         checked={checked}
       />
     </ListItemSecondaryAction>
@@ -25,8 +35,11 @@ Task.defaultProps = {
 
 Task.propTypes = {
   checked: PropTypes.bool,
+  id: PropTypes.number.isRequired,
   text: PropTypes.string,
   onCheckChange: PropTypes.func.isRequired,
+  onItemClick: PropTypes.func.isRequired,
+  onClickRemove: PropTypes.func.isRequired,
 };
 
 export default Task;

@@ -4,15 +4,24 @@ import List from '@material-ui/core/List';
 import Typography from '@material-ui/core/Typography';
 import Task from '../Task';
 
-const TodoList = ({ data }) => (
+const TodoList = ({ data, onRemove, onCheck }) => (
   <React.Fragment>
     {
       data.length ? (
         <List>
-          { data.map(({ id, text, checked }) => <Task key={id} text={text} checked={checked} />) }
+          { data.map(({ id, text, checked }) => (
+            <Task
+              key={id}
+              id={id}
+              text={text}
+              checked={checked}
+              onClickRemove={onRemove}
+              onCheckChange={onCheck}
+            />
+          )) }
         </List>
       ) : (
-        <Typography>
+        <Typography variant="subheading">
           Список пуст
         </Typography>
       )
@@ -30,6 +39,8 @@ TodoList.propTypes = {
     text: PropTypes.string,
     checked: PropTypes.bool,
   })),
+  onRemove: PropTypes.func.isRequired,
+  onCheck: PropTypes.func.isRequired,
 };
 
 export default TodoList;
