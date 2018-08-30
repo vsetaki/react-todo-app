@@ -12,8 +12,6 @@ const styles = theme => ({
     width: 500,
     margin: '0 auto',
     padding: theme.spacing.unit * 2,
-    boxShadow: theme.shadows[10],
-    height: `calc(100vh - ${theme.spacing.unit * 5}px)`,
   },
 });
 

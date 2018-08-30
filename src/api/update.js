@@ -7,9 +7,9 @@ function update(id, data) {
   let newState = [];
 
   if (tasks && Array.isArray(tasks)) {
-    const userIndex = tasks.findIndex(item => item.id === id);
-    tasks[userIndex] = { id, ...data };
-    newState = updateArray(userIndex, { id, ...data }, tasks);
+    const index = tasks.findIndex(item => item.id === id);
+    tasks[index] = { id, ...data };
+    newState = updateArray(index, { id, ...data }, tasks);
   }
 
   setLocalStorageItem(newState);

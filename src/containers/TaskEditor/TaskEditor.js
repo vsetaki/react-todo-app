@@ -2,8 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
-// import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
-// import ListItemText from '@material-ui/core/ListItemText';
 import Button from '@material-ui/core/Button';
 import { update, create } from '../../api';
 
@@ -104,6 +102,7 @@ class TaskEditor extends React.PureComponent {
     const { text, fetching, error } = this.state;
     const { classes } = this.props;
     const buttonText = this.isAdd ? 'Добавить' : 'Сохранить';
+    const buttonColor = this.isAdd ? 'primary' : 'secondary';
 
     return (
       <form noValidate autoComplete="off">
@@ -119,7 +118,7 @@ class TaskEditor extends React.PureComponent {
           helperText={error}
           fullWidth
         />
-        <Button onClick={this.submit} variant="raised" disabled={fetching} color="primary">
+        <Button onClick={this.submit} variant="raised" disabled={fetching} color={buttonColor}>
           {buttonText}
         </Button>
       </form>
