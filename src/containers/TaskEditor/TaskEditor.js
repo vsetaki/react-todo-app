@@ -1,15 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { withStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import { update, create } from '../../api';
-
-const style = {
-  textField: {
-
-  },
-};
 
 class TaskEditor extends React.PureComponent {
   constructor(props) {
@@ -31,14 +24,15 @@ class TaskEditor extends React.PureComponent {
   }
 
   get isValid() {
-    const { text } = this.state;
-    return !!text;
+    const { title } = this.state;
+    return !!title;
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
     if (nextProps.id !== prevState.id) {
       return {
         id: nextProps.id,
+        title: nextProps.title || '',
         text: nextProps.text || '',
       };
     }
@@ -57,6 +51,7 @@ class TaskEditor extends React.PureComponent {
           .then((data) => {
             this.setState({
               fetching: false,
+              title: '',
               text: '',
               error: null,
             });
@@ -71,18 +66,18 @@ class TaskEditor extends React.PureComponent {
    */
   process() {
     const { id } = this.props;
-    const { text } = this.state;
+    const { title, text } = this.state;
 
     if (id) {
-      return update(id, { text });
+      return update(id, { title, text });
     }
 
-    return create({ text });
+    return create({ title, text });
   }
 
   handleChange(event) {
     this.setState({
-      text: event.target.value,
+      [event.target.id]: event.target.value,
     });
   }
 
@@ -99,23 +94,31 @@ class TaskEditor extends React.PureComponent {
   }
 
   render() {
-    const { text, fetching, error } = this.state;
-    const { classes } = this.props;
-    const buttonText = this.isAdd ? 'Добавить' : 'Сохранить';
-    const buttonColor = this.isAdd ? 'primary' : 'secondary';
+    const {
+      title, text, fetching, error,
+    } = this.state;
+    const buttonText = this.isAdd ? 'Add task' : 'Save';
+    const buttonColor = this.isAdd ? 'primary' : 'default';
 
     return (
       <form noValidate autoComplete="off">
         <TextField
-          id="text"
-          label="Текст"
-          className={classes.textField}
-          value={text}
+          id="title"
+          label="Title"
+          value={title}
           onChange={this.handleChange}
-          margin="normal"
+          margin="none"
           required
           error={!!error}
           helperText={error}
+          fullWidth
+        />
+        <TextField
+          id="text"
+          label="Description"
+          value={text}
+          onChange={this.handleChange}
+          margin="dense"
           fullWidth
         />
         <Button onClick={this.submit} variant="raised" disabled={fetching} color={buttonColor}>
@@ -128,14 +131,15 @@ class TaskEditor extends React.PureComponent {
 
 TaskEditor.defaultProps = {
   id: null,
+  title: '',
   text: '',
 };
 
 TaskEditor.propTypes = {
-  classes: PropTypes.shape({}).isRequired,
   id: PropTypes.number,
-  text: PropTypes.string,
+  title: PropTypes.string, //eslint-disable-line
+  text: PropTypes.string, //eslint-disable-line
   onSubmit: PropTypes.func.isRequired,
 };
 
-export default withStyles(style)(TaskEditor);
+export default TaskEditor;

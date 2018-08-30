@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
+import Divider from '@material-ui/core/Divider';
 import TodoList from '../../components/TodoList';
 import { read, deleteTask, update } from '../../api';
 import TaskEditor from '../TaskEditor';
@@ -12,6 +13,9 @@ const styles = theme => ({
     width: 500,
     margin: '0 auto',
     padding: theme.spacing.unit * 2,
+  },
+  divider: {
+    margin: '20px 0',
   },
 });
 
@@ -33,6 +37,12 @@ class TodoApp extends Component {
 
   componentDidMount() {
     this.loadTasks();
+  }
+
+  get data() {
+    const { data } = this.state;
+
+    return data ? data.slice(0).reverse() : null;
   }
 
   process(promise) {
@@ -66,7 +76,7 @@ class TodoApp extends Component {
   }
 
   render() {
-    const { data, fetching, editing } = this.state;
+    const { fetching, editing } = this.state;
     const { classes } = this.props;
     return (
       <div className={classes.wrapper}>
@@ -74,21 +84,28 @@ class TodoApp extends Component {
           TODO app
         </Typography>
         <Progress spin={fetching} />
-        {
-          Array.isArray(data) && (
-            <TodoList
-              data={data}
-              onRemove={this.removeTask}
-              onCheck={this.checkTask}
-              onEdit={this.startEdit}
-            />
-          )
-        }
         <TaskEditor
           onSubmit={this.loadTasks}
           id={editing && editing.id}
           text={editing && editing.text}
+          title={editing && editing.title}
         />
+        <Divider className={classes.divider} />
+        {
+          Array.isArray(this.data) && (
+            <React.Fragment>
+              <Typography variant="title">
+                Task list
+              </Typography>
+              <TodoList
+                data={this.data}
+                onRemove={this.removeTask}
+                onCheck={this.checkTask}
+                onEdit={this.startEdit}
+              />
+            </React.Fragment>
+          )
+        }
       </div>
     );
   }

@@ -11,10 +11,13 @@ const TodoList = ({
     {
       data.length ? (
         <List>
-          { data.map(({ id, text, checked }) => (
+          { data.map(({
+            id, title, text, checked,
+          }) => (
             <Task
               key={id}
               id={id}
+              title={title}
               text={text}
               checked={checked}
               onClickRemove={onRemove}
@@ -25,7 +28,7 @@ const TodoList = ({
         </List>
       ) : (
         <Typography variant="subheading">
-          Список пуст
+          List is empty
         </Typography>
       )
     }

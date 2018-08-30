@@ -8,10 +8,10 @@ import Button from '@material-ui/core/Button';
 import DeleteIcon from '@material-ui/icons/Delete';
 
 const Task = ({
-  id, checked, text, onCheckChange, onItemClick, onClickRemove,
+  id, checked, title, text, onCheckChange, onItemClick, onClickRemove,
 }) => (
   <ListItem key={text} dense button onClick={() => onItemClick(id)}>
-    <ListItemText primary={text} />
+    <ListItemText primary={title} secondary={text} />
     <ListItemSecondaryAction>
       <Button
         onClick={() => onClickRemove(id)}
@@ -30,11 +30,13 @@ const Task = ({
 Task.defaultProps = {
   checked: false,
   text: '',
+  title: '',
 };
 
 Task.propTypes = {
   checked: PropTypes.bool,
   id: PropTypes.number.isRequired,
+  title: PropTypes.string,
   text: PropTypes.string,
   onCheckChange: PropTypes.func.isRequired,
   onItemClick: PropTypes.func.isRequired,
