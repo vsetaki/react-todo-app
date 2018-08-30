@@ -13,7 +13,7 @@ const style = {
   },
 };
 
-class TaskEditor extends React.Component {
+class TaskEditor extends React.PureComponent {
   constructor(props) {
     super(props);
 
@@ -34,32 +34,38 @@ class TaskEditor extends React.Component {
 
   get isValid() {
     const { text } = this.state;
-    return !text;
+    return !!text;
   }
 
-  // handleClick() {
-  //   if (this.isValid()) {
-  //     this.submit();
-  //   } else {
-  //     this.setState({ error: })
-  //   }
-  // }
+  static getDerivedStateFromProps(nextProps, prevState) {
+    if (nextProps.id !== prevState.id) {
+      return {
+        id: nextProps.id,
+        text: nextProps.text || '',
+      };
+    }
+
+    return null;
+  }
 
   submit() {
     const { onSubmit } = this.props;
 
-    this.validate().then(() => {
-      this.setState({ fetching: true });
+    this.validate()
+      .then(() => {
+        this.setState({ fetching: true });
 
-      this.process()
-        .then((data) => {
-          this.setState({
-            fetching: false,
-            text: '',
+        this.process()
+          .then((data) => {
+            this.setState({
+              fetching: false,
+              text: '',
+              error: null,
+            });
+            onSubmit(data);
           });
-          onSubmit(data);
-        });
-    });
+      })
+      .catch(error => this.setState({ error }));
   }
 
   /**
@@ -85,8 +91,12 @@ class TaskEditor extends React.Component {
   validate() {
     const error = this.isValid ? null : 'Поле обязательно для заполения';
 
-    return new Promise((resolve) => {
-      this.setState({ error }, resolve);
+    return new Promise((resolve, reject) => {
+      if (error) {
+        reject(error);
+      } else {
+        resolve();
+      }
     });
   }
 
@@ -105,7 +115,9 @@ class TaskEditor extends React.Component {
           onChange={this.handleChange}
           margin="normal"
           required
-          error={error && this.isValid}
+          error={!!error}
+          helperText={error}
+          fullWidth
         />
         <Button onClick={this.submit} variant="raised" disabled={fetching} color="primary">
           {buttonText}
@@ -117,12 +129,14 @@ class TaskEditor extends React.Component {
 
 TaskEditor.defaultProps = {
   id: null,
+  text: '',
 };
 
 TaskEditor.propTypes = {
   classes: PropTypes.shape({}).isRequired,
-  id: PropTypes.string,
-  onSubmit: PropTypes.func,
+  id: PropTypes.number,
+  text: PropTypes.string,
+  onSubmit: PropTypes.func.isRequired,
 };
 
 export default withStyles(style)(TaskEditor);

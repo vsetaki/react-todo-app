@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-// import { withStyles } from '@material-ui/core/styles';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ListItemText from '@material-ui/core/ListItemText';
@@ -11,7 +10,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 const Task = ({
   id, checked, text, onCheckChange, onItemClick, onClickRemove,
 }) => (
-  <ListItem key={text} dense button onClick={onItemClick}>
+  <ListItem key={text} dense button onClick={() => onItemClick(id)}>
     <ListItemText primary={text} />
     <ListItemSecondaryAction>
       <Button

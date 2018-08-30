@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
-import LinearProgress from '@material-ui/core/LinearProgress';
+import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import TodoList from '../../components/TodoList';
 import { read, deleteTask, update } from '../../api';
 import TaskEditor from '../TaskEditor';
+import Progress from '../../ui/Progress/Progress';
 
 const styles = theme => ({
   wrapper: {
@@ -23,11 +24,13 @@ class TodoApp extends Component {
     this.state = {
       data: null,
       fetching: false,
+      editing: null,
     };
 
     this.loadTasks = this.loadTasks.bind(this);
     this.removeTask = this.removeTask.bind(this);
     this.checkTask = this.checkTask.bind(this);
+    this.startEdit = this.startEdit.bind(this);
   }
 
   componentDidMount() {
@@ -40,6 +43,7 @@ class TodoApp extends Component {
     promise.then(data => this.setState({
       data,
       fetching: false,
+      editing: null,
     }));
   }
 
@@ -57,24 +61,43 @@ class TodoApp extends Component {
     this.process(update(id, { ...checkedTask, checked }));
   }
 
+  startEdit(id) {
+    const { data } = this.state;
+    const checkedTask = data.find(item => item.id === id);
+    this.setState({ editing: checkedTask });
+  }
+
   render() {
-    const { data, fetching } = this.state;
+    const { data, fetching, editing } = this.state;
     const { classes } = this.props;
     return (
       <div className={classes.wrapper}>
         <Typography variant="headline">
           TODO app
         </Typography>
-        { fetching && <LinearProgress /> }
+        <Progress spin={fetching} />
         {
           Array.isArray(data) && (
-            <TodoList data={data} onRemove={this.removeTask} onCheck={this.checkTask} />
+            <TodoList
+              data={data}
+              onRemove={this.removeTask}
+              onCheck={this.checkTask}
+              onEdit={this.startEdit}
+            />
           )
         }
-        <TaskEditor onSubmit={this.loadTasks} />
+        <TaskEditor
+          onSubmit={this.loadTasks}
+          id={editing && editing.id}
+          text={editing && editing.text}
+        />
       </div>
     );
   }
 }
+
+TodoApp.propTypes = {
+  classes: PropTypes.shape({}).isRequired,
+};
 
 export default withStyles(styles)(TodoApp);

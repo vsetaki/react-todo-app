@@ -4,7 +4,9 @@ import List from '@material-ui/core/List';
 import Typography from '@material-ui/core/Typography';
 import Task from '../Task';
 
-const TodoList = ({ data, onRemove, onCheck }) => (
+const TodoList = ({
+  data, onRemove, onCheck, onEdit,
+}) => (
   <React.Fragment>
     {
       data.length ? (
@@ -17,6 +19,7 @@ const TodoList = ({ data, onRemove, onCheck }) => (
               checked={checked}
               onClickRemove={onRemove}
               onCheckChange={onCheck}
+              onItemClick={onEdit}
             />
           )) }
         </List>
@@ -41,6 +44,7 @@ TodoList.propTypes = {
   })),
   onRemove: PropTypes.func.isRequired,
   onCheck: PropTypes.func.isRequired,
+  onEdit: PropTypes.func.isRequired,
 };
 
 export default TodoList;
